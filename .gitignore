@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+.npm/
+
+# Environment files — NEVER commit these
+.env
+.env.local
+.env.production
+backend/.env
+frontend/.env.local
+
+# Next.js build output
+frontend/.next/
+frontend/out/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Bob report exports (keep example, ignore generated ones)
+bob-report/sessions/*.json
+!bob-report/sessions/session-example.json

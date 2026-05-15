@@ -1,0 +1,114 @@
+# Bob Prompt: "Create a GitHub Actions CI workflow that runs tests for both backend and frontend on every push and PR."
+# Bob Output: Multi-job workflow with Node.js matrix, backend Jest tests, and frontend lint check.
+# Bob Guidance: Use a matrix strategy for Node versions to catch compatibility issues early; cache node_modules to speed up runs.
+# ---- Actual Code Below ----
+
+name: RepoPilot CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  # ─── Backend Tests ────────────────────────────────────────────────────────────
+  backend-tests:
+    name: Backend Tests (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Create required directories
+        working-directory: backend
+        run: mkdir -p logs
+
+      - name: Run backend tests with coverage
+        working-directory: backend
+        run: npm test -- --coverage --passWithNoTests
+        env:
+          NODE_ENV: test
+          BOB_API_URL: https://mock.ibm.bob/v1
+          BOB_API_KEY: test-key
+          BOB_PROJECT_ID: test-project
+          GITHUB_TOKEN: test-token
+          API_SECRET: test-secret
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: matrix.node-version == '20.x'
+        with:
+          name: backend-coverage
+          path: backend/coverage/
+
+  # ─── Frontend Lint ────────────────────────────────────────────────────────────
+  frontend-lint:
+    name: Frontend Lint & Build Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: frontend
+        run: npm run lint
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:5000
+          NEXT_PUBLIC_API_SECRET: test-secret
+
+      - name: Check Next.js build
+        working-directory: frontend
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:5000
+          NEXT_PUBLIC_API_SECRET: test-secret
+
+  # ─── Summary ──────────────────────────────────────────────────────────────────
+  ci-summary:
+    name: CI Summary
+    needs: [backend-tests, frontend-lint]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Check all jobs passed
+        run: |
+          if [ "${{ needs.backend-tests.result }}" != "success" ]; then
+            echo "❌ Backend tests failed"
+            exit 1
+          fi
+          if [ "${{ needs.frontend-lint.result }}" != "success" ]; then
+            echo "❌ Frontend lint/build failed"
+            exit 1
+          fi
+          echo "✅ All CI checks passed for RepoPilot"

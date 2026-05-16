@@ -7,12 +7,9 @@ import axios from 'axios';
 
 // ─── Axios Instance ────────────────────────────────────────────────────────────
 const api = axios.create({
-  // In production, Next.js rewrites handle the proxy — so we always use /api
-  baseURL: '/api',
+  baseURL: 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
-    // Internal API secret sent with every request
-    Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_SECRET || 'dev-secret'}`,
   },
   timeout: 60000, // 60s — Bob AI calls can be slow
 });

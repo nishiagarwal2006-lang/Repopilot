@@ -25,9 +25,7 @@ const PORT = process.env.PORT || 5000;
 // ─── Security Middleware ───────────────────────────────────────────────────────
 app.use(helmet()); // Sets secure HTTP headers
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? 'https://your-vercel-domain.vercel.app'  // Replace with your Vercel URL
-    : 'http://localhost:3000',
+  origin: '*',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -59,7 +57,7 @@ app.get('/health', (req, res) => {
 
 // ─── Protected API Routes ──────────────────────────────────────────────────────
 // All /api/* routes require the internal API_SECRET
-app.use('/api', authMiddleware);
+// app.use('/api', authMiddleware);  // temporarily disabled for dev
 app.use('/api/bob', bobRoutes);
 app.use('/api/github', githubRoutes);
 app.use('/api/report', reportRoutes);

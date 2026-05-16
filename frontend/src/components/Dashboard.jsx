@@ -160,31 +160,22 @@ export default function Dashboard({ repoData, owner, repo }) {
       </div>
 
       {/* ─── Tab Panels ───────────────────────────────────────────────────── */}
-      <div className="animate-fade-in" key={activeTab}>
+      <div key={activeTab} style={{ marginTop: '8px' }}>
 
         {/* OVERVIEW TAB */}
         {activeTab === 'overview' && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
 
-            {/* Bob Summary Card */}
             <div className="card" style={{ gridColumn: '1 / -1' }}>
               <div className="card-header">
-                <span className="card-title">
-                  ⚡ IBM Bob Summary
-                </span>
+                <span className="card-title">⚡ IBM Bob Summary</span>
                 <span className="badge badge-purple">AI Generated</span>
               </div>
-              <p style={{
-                color: 'var(--text-secondary)',
-                lineHeight: 1.8,
-                whiteSpace: 'pre-wrap',
-                fontSize: '14px',
-              }}>
+              <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, whiteSpace: 'pre-wrap', fontSize: '14px' }}>
                 {summary}
               </p>
             </div>
 
-            {/* File Tree Card */}
             <div className="card">
               <div className="card-header">
                 <span className="card-title">📁 File Tree</span>
@@ -196,7 +187,6 @@ export default function Dashboard({ repoData, owner, repo }) {
               </div>
             </div>
 
-            {/* Repo Info Card */}
             <div className="card">
               <div className="card-header">
                 <span className="card-title">ℹ️ Repo Info</span>
@@ -204,38 +194,18 @@ export default function Dashboard({ repoData, owner, repo }) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {[
                   { label: 'Default Branch', value: metadata.defaultBranch },
-                  { label: 'Last Updated',   value: new Date(metadata.updatedAt).toLocaleDateString() },
-                  { label: 'Created',        value: new Date(metadata.createdAt).toLocaleDateString() },
-                  { label: 'Top Contributor',value: health?.topContributor || 'N/A' },
-                  { label: 'Issue Close Rate',value: `${health?.issueCloseRate || 0}%` },
+                  { label: 'Last Updated', value: new Date(metadata.updatedAt).toLocaleDateString() },
+                  { label: 'Created', value: new Date(metadata.createdAt).toLocaleDateString() },
+                  { label: 'Top Contributor', value: health?.topContributor || 'N/A' },
+                  { label: 'Issue Close Rate', value: `${health?.issueCloseRate || 0}%` },
                 ].map((item) => (
-                  <div key={item.label} style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '8px 0',
-                    borderBottom: '1px solid var(--border-muted)',
-                  }}>
+                  <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--border-muted)' }}>
                     <span style={{ color: 'var(--text-muted)', fontSize: '13px' }}>{item.label}</span>
                     <span style={{ color: 'var(--text-primary)', fontSize: '13px', fontFamily: 'var(--font-mono)' }}>{item.value}</span>
                   </div>
                 ))}
               </div>
             </div>
-
-            {/* Topics */}
-            {metadata.topics?.length > 0 && (
-              <div className="card" style={{ gridColumn: '1 / -1' }}>
-                <div className="card-header">
-                  <span className="card-title">🏷️ Topics</span>
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {metadata.topics.map((t) => (
-                    <span key={t} className="badge badge-blue">{t}</span>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         )}
 

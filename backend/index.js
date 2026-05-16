@@ -52,15 +52,11 @@ app.get('/health', (req, res) => {
     status: 'RepoPilot backend is running 🚀',
     timestamp: new Date().toISOString(),
     env: process.env.NODE_ENV,
-  });
-
-app.get('/test-token', (req, res) => {
-  res.json({
     tokenStart: process.env.GITHUB_TOKEN?.slice(0,8),
     tokenLength: process.env.GITHUB_TOKEN?.length,
     hasToken: !!process.env.GITHUB_TOKEN,
+    port: process.env.PORT,
   });
-});
 });
 
 // ─── Protected API Routes ──────────────────────────────────────────────────────

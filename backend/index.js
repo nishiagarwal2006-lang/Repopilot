@@ -26,8 +26,9 @@ const PORT = process.env.PORT || 5000;
 app.use(helmet()); // Sets secure HTTP headers
 app.use(cors({
   origin: '*',
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false,
 }));
 
 // ─── Rate Limiting ─────────────────────────────────────────────────────────────

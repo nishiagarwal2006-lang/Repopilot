@@ -6,13 +6,17 @@
 import axios from 'axios';
 
 // ─── Axios Instance ────────────────────────────────────────────────────────────
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: `${BACKEND_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 60000, // 60s — Bob AI calls can be slow
+  timeout: 60000,
 });
+
+console.log('API connecting to:', BACKEND_URL);
 
 // ─── Response interceptor — normalize errors ───────────────────────────────────
 api.interceptors.response.use(
